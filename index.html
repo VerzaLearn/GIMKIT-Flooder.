@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gimkit Bot Spawner</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 50px; }
+  input { width: 200px; padding: 8px; margin: 10px 0; }
+  button { padding: 10px 20px; font-size: 16px; }
+</style>
+</head>
+<body>
+
+<h2>Gimkit Bot Spawner</h2>
+<form id="spawnForm">
+  <label>Pin:</label><br/>
+  <input type="text" id="pin" required /><br/>
+
+  <label>Names Pattern (use {n} for number):</label><br/>
+  <input type="text" id="names" placeholder="player{n}" required /><br/>
+
+  <label>Amount (max 100):</label><br/>
+  <input type="number" id="amount" min="1" max="100" value="10" required /><br/>
+
+  <button type="submit">Flood</button>
+</form>
+
+<script>
+  document.getElementById('spawnForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const pin = document.getElementById('pin').value.trim();
+    const namesPattern = document.getElementById('names').value.trim();
+    let amount = parseInt(document.getElementById('amount').value);
+
+    if (amount > 100) {
+      alert("Maximum bot amount is 100!");
+      amount = 100;
+    }
+
+    fetch('/spawn', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin, pattern: namesPattern, amount })
+    })
+    .then(res => res.text())
+    .then(data => alert(data))
+    .catch(err => alert('Error: ' + err));
+  });
+</script>
+
+</body>
+</html>
